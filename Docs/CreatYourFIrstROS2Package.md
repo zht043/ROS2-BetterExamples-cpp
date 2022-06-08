@@ -1,1 +1,114 @@
 # Create Your First ROS2 Package
+
+The ROS2 framework is designed to break down a robotics software system into concurrent multiprocess-programs called nodes, which interacts with one another by the 3 major core functionalities: Topic, Service, and Action. 
+
+Therefore, a hello world code for ROS2 should do a little more than just a C++ hello world program in a package. This section will introduce how to create a ROS2 package containing two nodes doing the same thing: printing hello world to stdouts on two seperate terminals, and also how to compile and run these codes.
+
+A ROS2 **package** may contain multiple **Nodes**, each **Node** runs on a separate process in the OS. Each **Node** can have multiple threads like any C++ program as well.  
+
+## Typical Package File Structure
+```zsh
+- <package_name>
+		- CMakeLists.txt  # CMake is the most popular C++ compilation/package managing tool,there are some specific CMake commands for ROS2
+		- package.xml     # Similar to the maven tool for Java, manages the meta info for this package
+		- include  # contains C++ header files
+		- src      # contains C++ source files 
+		- msg      # contains ROS2 message type definition files for pub-sub communication
+		- srv      # contains ROS2 service def files
+		- action   # contains ROS2 action def files 
+		- launch   # contains launch scripts, can be used to launch multiple Nodes in multiple windows via a single command
+
+		# Extra advanced stuff
+		- test
+		- scripts
+		- docs
+		- rviz
+		- maps
+		- config
+		- models  # SDF models
+		- urdf
+		- worlds  # Gazebo
+		
+		- <other user-defined stuff>
+```
+* The colcon tool will compile the codes in a package based on the info in **package.xml** and **CMakeList.txt**
+* **Packages** are usually kept under a **Workspace** directory, the compilation process by colcon usually generates the resulting products including executables under the workspace directory instead of inside the packages themselves  
+
+## Creat Package
+
+* First create a Workspace directory if you haven't done so already, in this example **the workspace will be the "00.GetStarted" directory** (in the official tutorial it's the **"dev_ws"** directory), then create a "src" directory under the workspace root.
+
+* The source_ros2_foxy is a custom command defined in my .zshrc (or .bashrc for bash users), it sources ros2 underlay and other useful stuff, check out the Install.md file in the Docs dir under this repository's root for details
+
+```zsh
+source_ros2_foxy
+
+# Assuming you are already in the workspace directory
+#   and the workspace contains a directory named "src"
+
+# using the pkg tool to generate a starter package named hello_world
+mkdir -p src
+cd src
+ros2 pkg create --build-type ament_cmake hello_world
+
+# create other common directories in a ROS2 package 
+cd hello_world
+mkdir -p msg srv action launch
+
+# then open the package directory in VSCode (or another editor/IDE) 
+code . 
+```
+
+## Configure package.xml
+* Open package.xml in your editor/IDE
+* Modify info elements like version, description, email, license, etc., as you see fit
+* For this example, simply add the following line below "<buildtool_depend>ament_cmake</buildtool_depend>":
+    ```xml
+    <depend>rclcpp</depend>
+    ```
+* In more complex applications, there will be more additional elements 
+
+## Configure CMakeList.txt
+Modify CMakeList.txt to be:
+```CMake
+cmake_minimum_required(VERSION 3.5)
+project(hello_world)
+
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+
+add_executable(node1 src/node1.cpp)
+ament_target_dependencies(node1 rclcpp)
+
+add_executable(node2 src/node2.cpp)
+ament_target_dependencies(node2 rclcpp)
+
+install(
+  TARGETS node1 node2
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_package()
+
+```

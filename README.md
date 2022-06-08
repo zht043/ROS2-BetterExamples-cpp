@@ -7,10 +7,10 @@ This repository contains C++ code examples for the ROS2(Robot Operating System 2
 The examples are organized in separate packages such that it would be easy to copy-paste into your own project. Docs explaining ROS2 concepts/commands and step-by-step guides are also provided. 
 
 
-[ROS2 official tutorial](https://docs.ros.org/en/foxy/Tutorials.html) ((just for reference))
+[ROS2 official tutorial](https://docs.ros.org/en/foxy/Tutorials.html) (just for reference)
 ## Get Started 
-This tutorial assumes you are already familiar with C++ and Linux environment. 
-Though there is no specific system requirement to run the code in this repo, the instructions in the Docs and READMEs assumes using Ubuntu 18.04 or above, Ubuntu 20.04 is recommended.
+This tutorial assumes you are already familiar with C++ and Linux. 
+Though ROS2 is technically cross-platform, the instructions here are meant to run on Ubuntu 20.04.
 
 Some dependencies to install in order to use full features of this repo:
 ```bash
