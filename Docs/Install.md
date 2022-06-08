@@ -1,7 +1,7 @@
 # Install ROS2
 
 ## ROS2 Foxy LTS
-[official ROS2 Foxy install guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html)
+[official ROS2 Foxy install guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) (just for reference)
 
 summary:
 

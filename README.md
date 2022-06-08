@@ -7,7 +7,7 @@ This repository contains C++ code examples for the ROS2(Robot Operating System 2
 The examples are organized in separate packages such that it would be easy to copy-paste into your own project. Docs explaining ROS2 concepts/commands and step-by-step guides are also provided. 
 
 
-[ROS2 official tutorial](https://docs.ros.org/en/foxy/Tutorials.html) 
+[ROS2 official tutorial](https://docs.ros.org/en/foxy/Tutorials.html) ((just for reference))
 ## Get Started 
 This tutorial assumes you are already familiar with C++ and Linux environment. 
 Though there is no specific system requirement to run the code in this repo, the instructions in the Docs and READMEs assumes using Ubuntu 18.04 or above, Ubuntu 20.04 is recommended.
@@ -24,12 +24,14 @@ In addition, I use the zsh shell and VSCode IDE, their related configs are liste
 
 
 ### Install 
-Please follow the instructions in this file: [Install](./Docs/Install.md)
+Please follow the instructions in [Install](./Docs/Install.md)
 
-Clone this repository and use it as the workspace for the packages it contains.
+Clone this repository and use it as the **Workspace** for the packages it contains.
 ```zsh
 git clone https://github.com/zht043/ROS2-BetterExamples-cpp.git
 ```
+
+You may follow the instructions in [create your first package](./Docs/CreatYourFIrstROS2Package.md) to create a hello-world package from scratch and help you get familiar with the build & run workflow and project structure of ROS2. 
 
 ## Packages of ROS2 Examples
 
