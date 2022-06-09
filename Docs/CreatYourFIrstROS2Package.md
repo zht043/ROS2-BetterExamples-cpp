@@ -38,7 +38,7 @@ A ROS2 **package** may contain multiple **Nodes**, each **Node** runs on a separ
 
 * First create a Workspace directory if you haven't done so already, in this example **the workspace will be the "00.GetStarted" directory** (in the official tutorial it's the **"dev_ws"** directory), then create a "src" directory under the workspace root.
 
-* The source_ros2_foxy is a custom command defined in my .zshrc (or .bashrc for bash users), it sources ros2 underlay and other useful stuff, check out the Install.md file in the Docs dir under this repository's root for details
+* The source_ros2_foxy is a custom command defined in my .zshrc (or .bashrc for bash users), it sources ros2 underlay and other useful stuff, check out the [Install](./Install.md) guide.
 
 ```zsh
 source_ros2_foxy
@@ -111,4 +111,97 @@ endif()
 
 ament_package()
 
+```
+
+## VSCode ROS Tips
+(tips for noobs, experts plz ignore)
+* Assuming you have already installed the ROS plugins in VSCode listed in the [Install](./Install.md) guide
+* In your .vscode/c_cpp_properties.json (in the package directory, not workspace or repo root!), add this path to the includePath field:
+	* "\<complete path to your workspace\>/install/\<package name\>/include/"
+		* the "install" directory is auto-generated after compilation using colcon, it doesn't exist when you have a fresh start with a new workspace yet
+		* this path leads to where ROS2 stores the auto-generated C++ sources from the .msg, .srv, .action definition files  
+		* telling VSCode this particular include path helps the not-so-smart(:P) VSCode C++ intellisense functionalities.
+		* As an example, in my computer this path would be:
+        	* "/home/zht/Project/ROS2-BetterExamples-cpp/00.GetStarted/install/hello_world/include/"
+			 
+* Having VSCode opening your particular package directory allows the CMake and C++ intellisense plugins in VSCode to work properly with features such as autocomplete, etc. 
+	* in this particular hello world example, your VSCode should be opening the "hello_world" directory
+* Useful command if unreasonable error squiggles appears: ctrl+shift+P, then type: CMake:Configure 
+* Technically this hello world example doesn't have any .msg, .srv, or .action definition, but you will eventually need them anyways
+
+## Write C++
+Since the two nodes do the exact same thing, I will only post the code for node1.cpp, just copy paste it and rename it to node2.cpp for the second node.
+```C++
+#include <memory>
+#include <chrono>
+#include <string>
+
+#include "rclcpp/rclcpp.hpp"
+
+using namespace std::chrono_literals;
+using rclcpp::TimerBase;
+
+class Node1 : public rclcpp::Node {
+public:
+    Node1() : Node("Node1") {
+        /* create a timer that calls the timer_callback func for every 0.5 seconds */
+        timer = create_wall_timer(
+            0.5s, 
+            std::bind(&Node1::timer_callback, this)
+        );
+    }
+private:
+    void timer_callback();
+    std::shared_ptr<TimerBase> timer;
+};
+
+
+void Node1::timer_callback() {
+    RCLCPP_INFO(get_logger(), "Hello World!");
+}
+
+int main(int argc, char *argv[]) {
+    rclcpp::init(argc, argv);
+    rclcpp::spin(
+        std::make_shared<Node1>()
+    );
+    
+    rclcpp::shutdown();
+    return 0;
+}
+``` 
+For node2.cpp, change Node("Node1") to Node("Node2")
+
+
+## Compile
+* colcon tool will be used for compiling these ROS C++ codes 
+* The normal C++ project uses cmake & make commands to compile, but in ROS2 framework, it involves compiling multiple CMake projects (corresponding to the multiple ROS2 Nodes)
+* colcon will compile/build everything in a workspace or package with a single command
+```zsh
+cd ../.. #this will navigate back to the workspace directory
+source_ros2_foxy
+colcon build
+```
+* colcon build will compile all packages in the workspace
+* To compile just the hello_world package, use this instead:
+	```zsh
+	colcon build --packages-up-to hello_world
+	```
+* colcon command is meant to be called under the workspace directory, instead of the package directory!
+
+## Run
+* Spawn a new terminal, don't use the terminal you called colcon for running your ROS2 code, or bugs might arise according to ROS2 documentations
+
+In your new terminal:
+```zsh
+cd <path to your workspace> # workspace directory, not package directory
+source install/setup.zsh
+ros2 run hello_world node1
+```
+
+then in another new terminal:
+```zsh
+cd <path to your workspace> # workspace directory, not package directory
+source install/setup.zsh
+ros2 run hello_world node2
 ```
