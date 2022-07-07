@@ -71,6 +71,7 @@ sudo apt-get install python3-argcomplete
     }
     ```
 * Every time you want to source a ROS shell script file, choose the file ending with .zsh if you use zsh shell, or ending with .bash if you use bash shell. ROS built script files have both versions.
+* don't forget to "source /.bashrc" or "source /.zshrc"
 
 ### VSCode Plugins
 I prefer using Microsoft Visual Studio Code Editor to write cpp code, here are some plugins I recommend for ROS2 dev:
